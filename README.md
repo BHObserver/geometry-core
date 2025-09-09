@@ -1,151 +1,147 @@
-# Geometry Core - Interactive Proof Visualization System
+# Interactive Geometry Theorem Visualizer
 
-A robust TypeScript-based geometry system for interactive theorem visualization and proof construction, designed for educational applications.
+A data-driven, reusable Geometry Visualizer built with React, TypeScript, and Next.js. The visualizer renders geometry theorems defined in a single file using SVG animations and real-time diagnostics.
 
 ## Features
 
-### Core Geometry Operations
-- **Precise Calculations**: Using robust predicates for numerical stability
-- **Complete Congruence Tests**: SSS, SAS, ASA, AAS, HL criteria
-- **Construction Tools**: Midpoint, perpendicular bisector, angle bisector
-- **Diagnostics**: Length, angle, and area measurements with automatic relation detection
-
-### Visualization System
-- **React Konva Integration**: High-performance canvas rendering
-- **Interactive Elements**: Drag-and-drop geometry elements
-- **Step-by-Step Highlighting**: Pedagogical theorem progression
-- **Real-time Diagnostics**: Live measurements and relationship detection
+- **🎯 Precise Calculations**: Robust geometric predicates ensure numerical stability
+- **📐 Interactive Visualizations**: Step-by-step theorem progression with smooth animations
+- **🔍 Real-time Diagnostics**: Live measurements of lengths, angles, and areas
+- **🎨 Modern Design**: Dark theme with golden accents for a scientific look
+- **📱 Responsive**: Mobile-friendly interface with Tailwind CSS
+- **⚡ Performance**: Optimized animations with Framer Motion
 
 ## Architecture
 
-```
-src/
-├── primitives/          # Core geometry primitives
-│   ├── Point.ts
-│   ├── Line.ts
-│   ├── Circle.ts
-│   └── Triangle.ts
-├── ops/                 # Geometric operations
-│   ├── measures.ts      # Distance, angle, area calculations
-│   ├── relations.ts     # Perpendicular, parallel, collinear tests
-│   ├── constructions.ts # Midpoint, perpendicular bisector
-│   ├── congruence.ts    # SSS, SAS, ASA, AAS, HL tests
-│   └── diagnostics.ts   # Comprehensive geometry analysis
-├── math/                # Mathematical utilities
-│   ├── numeric.ts       # Precision constants and helpers
-│   └── robust.ts        # Robust geometric predicates
-├── components/          # React visualization components
-│   └── GeometryCanvas.tsx
-└── theorems/            # Theorem definitions and visualization
-    ├── types.ts
-    ├── examples.ts
-    └── visualization.ts
-```
+The system is designed for maximum reusability:
 
-## Quick Start
+- **`theorems.ts`**: Contains all theorem definitions and geometry calculations
+- **`GeometryVisualizer.tsx`**: Generic component that renders any theorem
+- **`page.tsx`**: Demo page with theorem selection
 
-### Installation
+## Adding a New Theorem
 
-```bash
-npm install
-```
+To add a new theorem, you only need to edit `components/geometry/theorems.ts`:
 
-### Basic Usage
+### 1. Define the Theorem Structure
 
 ```typescript
-import { point, lineThrough } from './primitives';
-import { midpoint, perpendicularBisector } from './ops/constructions';
-import { congruenceTest } from './ops/congruence';
-import { GeometryCanvas } from './components/GeometryCanvas';
-
-// Create geometry elements
-const A = point(0, 0, 'A');
-const B = point(100, 0, 'B');
-const C = point(50, 100, 'C');
-
-// Perform constructions
-const mid = midpoint(A, B);
-const { bisector } = perpendicularBisector(A, B);
-
-// Test congruence
-const isCongruent = congruenceTest([A, B, C], [D, E, F], 'SSS');
-
-// Render with React Konva
-<GeometryCanvas
-  width={800}
-  height={600}
-  elements={geometryElements}
-  showDiagnostics={true}
-/>
+export const myNewTheorem: Theorem = {
+  id: "my-theorem",
+  title: "My Theorem Title",
+  statement: "The theorem statement goes here",
+  steps: [
+    { id: "step1", label: "First step", highlight: ["element1"] },
+    { id: "step2", label: "Second step", highlight: ["element2"] },
+    // ... more steps
+  ],
+  setup: (width, height) => {
+    // Geometry calculations go here
+    return {
+      points: [...],
+      lines: [...],
+      polygons: [...],
+      markers: [...],
+      diagnostics: [...],
+      visibility: {...},
+      circle: { centerId: "O", r: 150 }
+    };
+  }
+};
 ```
 
-## Key Components
+### 2. Add to Exports
 
-### Geometry Primitives
-- **Point**: 2D coordinates with optional labels
-- **Line**: Normalized ax + by + c = 0 representation
-- **Circle**: Center point and radius
-- **Triangle**: Three vertex references
-
-### Operations
-- **Measures**: Distance, angles, areas with high precision
-- **Relations**: Perpendicular, parallel, collinear detection
-- **Constructions**: Compass and straightedge constructions
-- **Congruence**: All five congruence criteria
-- **Diagnostics**: Comprehensive geometry analysis
-
-### Visualization
-- **Interactive Canvas**: Drag-and-drop geometry elements
-- **Step-by-Step Progression**: Theorem visualization with highlighting
-- **Real-time Diagnostics**: Live measurements and relationships
-- **Educational Focus**: Pedagogical consistency maintained
-
-## Precision and Robustness
-
-The system uses robust geometric predicates to ensure numerical stability:
-- `robust-predicates`: For orientation and incircle tests
-- `robust-segment-intersect`: For reliable intersection detection
-- Custom epsilon-based comparisons for floating-point equality
-
-## Educational Integration
-
-### Theorem Structure
 ```typescript
-interface Theorem {
-  title: string;
-  steps: TheoremStep[];
-  initialElements: GeometryElements;
-}
-
-interface TheoremStep {
-  title: string;
-  description: string;
-  highlightedElements: string[];
-  construction?: ConstructionStep;
-  proof?: ProofStep;
-}
+export const theorems: Theorem[] = [
+  chordMidpointTheorem, 
+  equalChordsTheorem,
+  myNewTheorem  // Add your new theorem here
+];
 ```
 
-### Visualization Control
-- Full control over proof logic and visual presentation
-- Step-by-step highlighting of diagram elements
-- Interactive construction tools
-- Real-time diagnostic feedback
+### 3. Use Geometry Core for Calculations
 
-## Performance
+The system leverages the geometry core for precise calculations:
 
-- **Pure TypeScript**: No WebAssembly dependencies
-- **Optimized Algorithms**: Efficient geometric computations
-- **Canvas Rendering**: High-performance 2D graphics
-- **Minimal Bundle**: Lightweight core with optional features
+```typescript
+// Create points
+const A = createPoint(x, y, "A", "A", "#ef4444", 5);
 
-## Contributing
+// Calculate midpoints using geometry core
+const coreA = point(A.x, A.y, 'A');
+const coreB = point(B.x, B.y, 'B');
+const coreM = midpoint(coreA, coreB);
+const M = createPoint(coreM.x, coreM.y, "M", "M", "#10b981", 5);
 
-1. Fork the repository
-2. Create a feature branch
-3. Implement with tests
-4. Submit a pull request
+// Generate diagnostics
+const diagnostics: Diagnostic[] = [
+  { label: "|OM|", value: `${distance(coreO, coreM).toFixed(2)} px` },
+  { label: "∠OMA", value: `${toDeg(angleAt(coreO, coreM, coreA)).toFixed(1)}°` },
+];
+```
 
-## License
+### 4. Define Visibility Mapping
 
-MIT License - see LICENSE file for details.
+Each element needs a visibility mapping that determines when it appears:
+
+```typescript
+const visibility: Record<string, string> = {
+  circle: "circle",        // Appears in "circle" step
+  A: "chord",             // Appears in "chord" step
+  M: "midpoint",          // Appears in "midpoint" step
+  rightangle: "angles",   // Appears in "angles" step
+};
+```
+
+## Key Benefits
+
+### 🚀 **Simplified Theorem Creation**
+- No need to modify the visualizer component
+- Geometry core handles all complex calculations
+- Automatic diagnostic generation
+- Consistent animation and interaction patterns
+
+### 🎯 **Robust Geometry**
+- Uses your existing geometry core for precision
+- Robust predicates prevent floating-point errors
+- Complete congruence testing capabilities
+- Real-time diagnostic calculations
+
+### 🎨 **Modern UI/UX**
+- Dark theme with golden accents
+- Smooth animations and transitions
+- Interactive element highlighting
+- Mobile-responsive design
+
+## File Structure
+
+```
+components/geometry/
+├── theorems.ts              # All theorem definitions
+├── GeometryVisualizer.tsx    # Generic visualizer component
+└── utils/
+    └── geometry.ts          # Geometry utility functions
+
+app/geometry/
+└── page.tsx                 # Demo page with theorem selection
+```
+
+## Usage
+
+1. **Select a Theorem**: Use the dropdown to choose between available theorems
+2. **Navigate Steps**: Use Prev/Next buttons to progress through the proof
+3. **View Diagnostics**: Toggle diagnostics to see real-time measurements
+4. **Interact**: Click on elements for detailed information
+5. **Control**: Use Reset and Replay buttons for navigation control
+
+## Technical Details
+
+- **Framework**: Next.js with App Router
+- **Styling**: Tailwind CSS with custom dark theme
+- **Animations**: Framer Motion for smooth transitions
+- **Geometry**: Custom geometry core with robust predicates
+- **TypeScript**: Full type safety throughout
+- **Responsive**: Mobile-first design approach
+
+The system is designed to be both powerful and maintainable, allowing you to focus on the mathematical content while the framework handles the visualization and interaction details.
