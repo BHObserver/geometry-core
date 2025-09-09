@@ -489,6 +489,6 @@ export default function GeometryVisualizer({
           </div>
         </div>
       )}
-    </div>
+    </div>  
   );
 }
